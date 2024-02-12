@@ -1,0 +1,244 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int MAX_DIMENSION = 10;
+
+// Fungsi untuk mencetak matriks
+void printMatrix(const vector<vector<double>>& matrix, int numRows, int numCols) {
+    for (int i = 0; i < numRows; ++i) {
+        for (int j = 0; j < numCols; ++j) {
+            cout << matrix[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+// Fungsi untuk mencari solusi kombinasi vektor
+void findVectorCombination(const vector<vector<double>>& vectors, const vector<double>& basis) {
+    int numVectors = vectors.size();
+    int dimension = vectors[0].size();
+
+    // Bentuk matriks augmented dari vektor dan basis
+    vector<vector<double>> augmentedMatrix(numVectors, vector<double>(dimension + 1));
+    for (int i = 0; i < numVectors; ++i) {
+        for (int j = 0; j < dimension; ++j) {
+            augmentedMatrix[i][j] = vectors[j][i];
+        }
+        augmentedMatrix[i][dimension] = basis[i];
+    }
+
+    // Lakukan eliminasi Gauss
+    for (int i = 0; i < numVectors; ++i) {
+        for (int k = i + 1; k < numVectors; ++k) {
+            double ratio = augmentedMatrix[k][i] / augmentedMatrix[i][i];
+            for (int j = i; j <= dimension; ++j) {
+                augmentedMatrix[k][j] -= ratio * augmentedMatrix[i][j];
+            }
+        }
+    }
+
+    // Lakukan substitusi mundur untuk mencari solusi
+    vector<double> solution(numVectors, 0.0);
+    for (int i = numVectors - 1; i >= 0; --i) {
+        solution[i] = augmentedMatrix[i][dimension];
+        for (int j = i + 1; j < numVectors; ++j) {
+            solution[i] -= augmentedMatrix[i][j] * solution[j];
+        }
+        solution[i] /= augmentedMatrix[i][i];
+    }
+
+    // Cetak solusi
+    cout << "Solusi kombinasi vektor:" << endl;
+    for (int i = 0; i < numVectors; ++i) {
+        cout << "V" << i + 1 << " = " << solution[i] << " * ";
+        for (int j = 0; j < dimension; ++j) {
+            cout << vectors[j][i];
+            if (j < dimension - 1) {
+                cout << " + ";
+            }
+        }
+        cout << endl;
+    }
+}
+
+int main() {
+    int pilihan;
+    do {
+        cout << "Pilih program yang ingin dijalankan:" << endl;
+        cout << "1. Program perhitungan determinan matriks 2x2" << endl;
+        cout << "2. Program penjumlahan dua matriks" << endl;
+        cout << "3. Program pengurangan dua matriks" << endl;
+        cout << "4. Program mencari solusi kombinasi vektor" << endl;
+        cout << "0. Keluar" << endl;
+        cout << "Masukkan pilihan: ";
+        cin >> pilihan;
+
+        switch (pilihan) {
+            case 1: {
+                // Kode untuk program perhitungan determinan matriks 2x2
+                int matrix[2][2];
+                cout << "Program perhitungan determinan matriks 2X2" << endl;
+                cout << "Masukkan elemen matriks 2x2:" << endl;
+                for (int i = 0; i < 2; ++i) {
+                    for (int j = 0; j < 2; ++j) {
+                        cout << "Masukkan elemen matriks[" << i + 1 << "][" << j + 1 << "]: ";
+                        cin >> matrix[i][j];
+                    }
+                }
+                for (int i = 0; i < 35; i++){
+                    cout << "-";
+                }
+                cout << endl;
+                // Tampilkan Matriks
+                cout << "Matriks" << endl;
+                for (int i = 0; i < 2;  i++) {
+                    for (int j = 0; j < 2; j++){
+                        cout << matrix[i][j] <<"\t";
+                    }
+                    cout << endl;
+                }
+                // Hitung determinan
+                int determinant = matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+                break;
+            }
+            case 2: {
+                // Kode untuk program penjumlahan dua matriks
+                int baris, kolom;
+                // Input ukuran matriks
+                cout << "Masukkan jumlah baris matriks: ";
+                cin >> baris;
+                cout << "Masukkan jumlah kolom matriks: ";
+                cin >> kolom;
+                // Inisialisasi matriks A
+                int matriksA[baris][kolom];
+                cout << "Masukkan elemen matriks A:" << endl;
+                for (int i = 0; i < baris; ++i) {
+                    for (int j = 0; j < kolom; ++j) {
+                        cout << "A[" << i + 1 << "][" << j + 1 << "]: ";
+                        cin >> matriksA[i][j];
+                    }
+                }
+                // Inisialisasi matriks B
+                int matriksB[baris][kolom];
+                cout << "Masukkan elemen matriks B:" << endl;
+                for (int i = 0; i < baris; ++i) {
+                    for (int j = 0; j < kolom; ++j) {
+                        cout << "B[" << i + 1 << "][" << j + 1 << "]: ";
+                        cin >> matriksB[i][j];
+                    }
+                }
+                // Menjumlahkan dua matriks
+                int hasil[baris][kolom];
+                for (int i = 0; i < baris; ++i) {
+                    for (int j = 0; j < kolom; ++j) {
+                        hasil[i][j] = matriksA[i][j] + matriksB[i][j];
+                    }
+                }
+                for (int i = 0; i < 35; i++){
+                    cout << "-";
+                }
+                cout << endl;
+                // menapilkan matrik
+                cout << "Matrik A" << endl;
+                for (int i = 0; i < baris; ++i) {
+                    for (int j = 0; j < kolom; ++j) {
+                        cout << matriksA[i][j] << "\t";
+                    }
+                    cout << endl;
+                }
+                cout << "diTambahkan dengan"<< endl;
+                cout << "Matriks B"<< endl;
+                for (int i = 0; i < baris; ++i) {
+                    for (int j = 0; j < kolom; ++j) {
+                        cout << matriksB[i][j] << "\t";
+                    }
+                    cout << endl;
+                }
+                // Menampilkan hasil
+                cout << "Hasil pertambahan matriks:" << endl;
+                for (int i = 0; i < baris; ++i) {
+                    for (int j = 0; j < kolom; ++j) {
+                        cout << hasil[i][j] << "\t";
+                    }
+                    cout << endl;
+                }
+                break;
+            }
+            case 3: {
+                // Kode untuk program pengurangan dua matriks
+                int baris, kolom;
+                // Input ukuran matriks
+                cout << "Masukkan jumlah baris matriks: ";
+                cin >> baris;
+                cout << "Masukkan jumlah kolom matriks: ";
+                cin >> kolom;
+                // Inisialisasi matriks A
+                int matriksA[baris][kolom];
+                cout << "Masukkan elemen matriks A:" << endl;
+                for (int i = 0; i < baris; ++i) {
+                    for (int j = 0; j < kolom; ++j) {
+                        cout << "A[" << i + 1 << "][" << j + 1 << "]: ";
+                        cin >> matriksA[i][j];
+                    }
+                }
+                // Inisialisasi matriks B
+                int matriksB[baris][kolom];
+                cout << "Masukkan elemen matriks B:" << endl;
+                for (int i = 0; i < baris; ++i) {
+                    for (int j = 0; j < kolom; ++j) {
+                        cout << "B[" << i + 1 << "][" << j + 1 << "]: ";
+                        cin >> matriksB[i][j];
+                    }
+                }
+                // Pengurangan dua matriks
+                int hasil[baris][kolom];
+                for (int i = 0; i < baris; ++i) {
+                    for (int j = 0; j < kolom; ++j) {
+                        hasil[i][j] = matriksA[i][j] - matriksB[i][j];
+                    }
+                }
+                break;
+            }
+            case 4: {
+                // Kode untuk program mencari solusi kombinasi vektor
+                int dimension, numVectors;
+                cout << "Masukkan dimensi vektor: ";
+                cin >> dimension;
+                cout << "Masukkan jumlah vektor: ";
+                cin >> numVectors;
+                if (dimension > MAX_DIMENSION || numVectors > MAX_DIMENSION) {
+                    cout << "Ukuran matriks terlalu besar. Program tidak dapat melanjutkan." << endl;
+                    break;
+                }
+                // Matriks vektor
+                vector<vector<double>> vectors(dimension, vector<double>(numVectors));
+                cout << "Masukkan vektor:" << endl;
+                for (int i = 0; i < dimension; ++i) {
+                    for (int j = 0; j < numVectors; ++j) {
+                        cout << "Masukkan elemen V" << j + 1 << "[" << i + 1 << "]: ";
+                        cin >> vectors[i][j];
+                    }
+                }
+                // Vektor basis
+                vector<double> basis(numVectors);
+                cout << "Masukkan vektor basis:" << endl;
+                for (int i = 0; i < numVectors; ++i) {
+                    cout << "Masukkan elemen basis[" << i + 1 << "]: ";
+                    cin >> basis[i];
+                }
+                // Cari solusi kombinasi vektor
+                findVectorCombination(vectors, basis);
+                break;
+            }
+            case 0: {
+                cout << "Program selesai." << endl;
+                break;
+            }
+            default:
+                cout << "Pilihan tidak valid. Silakan coba lagi." << endl;
+        }
+    } while (pilihan != 0);
+    return 0;
+}
